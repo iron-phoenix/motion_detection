@@ -9,22 +9,18 @@ using cv::VideoCapture;
 using cv::Mat;
 using cv::absdiff;
 using cv::threshold;
-using cv::bitwise_and;
 using cv::cvtColor;
 using cv::Size;
-using cv::erode;
 using cv::Scalar;
 using cv::meanStdDev;
 using cv::imwrite;
 using cv::MORPH_RECT;
 using cv::Point;
 using cv::Rect;
-using cv::namedWindow;
-using cv::imshow;
 using cv::GaussianBlur;
 using cv::waitKey;
 
-MotionDetector::MotionDetector(int capture_device_id, int threshold):
+MotionDetector::MotionDetector(int capture_device_id, int threshold, int width, int height):
 	cap(capture_device_id),
 	error(NO_ERRORS),
 	standard_deviation(50),
@@ -34,6 +30,9 @@ MotionDetector::MotionDetector(int capture_device_id, int threshold):
 			error = CAPTURE_INIT_ERROR;
 			return;
 		}
+
+		cap.set(CV_CAP_PROP_FRAME_WIDTH, width);
+		cap.set(CV_CAP_PROP_FRAME_HEIGHT, height);
 
 		cap >> previous_frame;
 		cap >> current_frame;
@@ -46,7 +45,6 @@ MotionDetector::MotionDetector(int capture_device_id, int threshold):
 
 void MotionDetector::detect_motion() {
 	size_t no_motion_frames = 0;
-	namedWindow("Result", CV_WINDOW_AUTOSIZE);
 
 	while (true) {
 		previous_frame = current_frame;
@@ -61,11 +59,9 @@ void MotionDetector::detect_motion() {
 
 		size_t number_of_changes = get_number_of_changes();
 
-		imshow("Result", result);
-		
 		if (number_of_changes > threshold_) {
 			no_motion_frames = 0;
-			video_writer.write(result);
+			video_writer->write((char *) (result.data), result.rows * result.cols * 3);
 		} else {
 			++no_motion_frames;
 			if (no_motion_frames == NO_MOTION_FRAMES && motion_photo_frame.photo_frame.data) {

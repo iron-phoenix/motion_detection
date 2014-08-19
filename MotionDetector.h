@@ -6,12 +6,13 @@
 #include <opencv2/opencv.hpp>
 
 #include <string>
+#include <fstream>
 
 using cv::VideoCapture;
-using cv::VideoWriter;
 using cv::Mat;
 
 using std::string;
+using std::ofstream;
 
 enum ErrorType {
 	NO_ERRORS,
@@ -20,9 +21,9 @@ enum ErrorType {
 };
 
 struct MotionDetector {
-	MotionDetector(int capture_device_id, int threshold);
+	MotionDetector(int capture_device_id, int threshold, int width = 640, int height = 480);
 
-	void set_video_writer(const VideoWriter & video_writer) { this->video_writer = video_writer; }
+	void set_video_writer(ofstream * video_writer) { this->video_writer = video_writer; }
 	void set_standard_deviation(const int standart_deviation) { this->standard_deviation = standard_deviation; }
 	void set_save_filename(const string & save_filename) { this->save_filename = save_filename; }
 	void set_mail_sender(MailPhotoSender * const mail_sender) { this->mail_sender = mail_sender; send_mail = true; }
@@ -32,7 +33,7 @@ struct MotionDetector {
 	void detect_motion();
 
 private:
-	static const size_t NO_MOTION_FRAMES = 100;
+	static const size_t NO_MOTION_FRAMES = 10;
 
 	VideoCapture cap;
 
@@ -53,7 +54,7 @@ private:
 
 	} motion_photo_frame;
 
-	VideoWriter video_writer;
+	ofstream * video_writer;
 
 	ErrorType error;
 
