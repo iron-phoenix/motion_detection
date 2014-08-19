@@ -25,7 +25,7 @@ struct MotionDetector {
 	void set_video_writer(const VideoWriter & video_writer) { this->video_writer = video_writer; }
 	void set_standard_deviation(const int standart_deviation) { this->standard_deviation = standard_deviation; }
 	void set_save_filename(const string & save_filename) { this->save_filename = save_filename; }
-	void set_mail_sender(MailPhotoSender * const mail_sender) { this->mail_sender = mail_sender; }
+	void set_mail_sender(MailPhotoSender * const mail_sender) { this->mail_sender = mail_sender; send_mail = true; }
 
 	bool is_opened() { return error == NO_ERRORS; }
 
@@ -38,15 +38,10 @@ private:
 
 	Mat current_frame;
 	Mat previous_frame;
-	Mat next_frame;
 
 	Mat result;
 
-	Mat motion;
-	Mat diff1;
-	Mat diff2;
-
-	Mat erode_kernel;
+	Mat diff;
 
 	struct MotionPhotoFrame {
 		size_t motion_square;
@@ -75,6 +70,7 @@ private:
 	string save_filename;
 
 	MailPhotoSender * mail_sender;
+	bool send_mail;
 
 	bool is_motion_real();
 	size_t get_number_of_changes();

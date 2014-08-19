@@ -28,7 +28,7 @@ int main(int argc, char** argv) {
 		return -2;
 	}
 	motion_detector.set_video_writer(outputVideo);
-	motion_detector.set_mail_sender(mail_photo_sender);
+	//motion_detector.set_mail_sender(mail_photo_sender);
 	motion_detector.set_save_filename("motion.jpg");
 
 	motion_detector.detect_motion();
