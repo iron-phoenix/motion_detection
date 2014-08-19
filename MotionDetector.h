@@ -61,10 +61,10 @@ private:
 	int threshold_;
 
 	struct Rectangle {
-		size_t min_x;
-		size_t min_y;
-		size_t max_x;
-		size_t max_y;
+		int min_x;
+		int min_y;
+		int max_x;
+		int max_y;
 	} bound_motion;
 
 	string save_filename;

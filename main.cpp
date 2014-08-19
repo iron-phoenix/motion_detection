@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
 
 	MailPhotoSender * mail_photo_sender = new PythonMailPhotoSender("./SendMail.py", "send_mail.conf");
 
-	MotionDetector motion_detector(0, 5);
+	MotionDetector motion_detector(0, 100);
 	if (!motion_detector.is_opened()) {
 		cout << "Could not open video device" << endl;
 		return -2;

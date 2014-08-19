@@ -27,7 +27,7 @@ using cv::waitKey;
 MotionDetector::MotionDetector(int capture_device_id, int threshold):
 	cap(capture_device_id),
 	error(NO_ERRORS),
-	standard_deviation(20),
+	standard_deviation(50),
 	threshold_ (threshold),
 	send_mail(false) {
 		if (!cap.isOpened()) {
@@ -46,6 +46,7 @@ MotionDetector::MotionDetector(int capture_device_id, int threshold):
 
 void MotionDetector::detect_motion() {
 	size_t no_motion_frames = 0;
+	namedWindow("Result", CV_WINDOW_AUTOSIZE);
 
 	while (true) {
 		previous_frame = current_frame;
@@ -59,6 +60,8 @@ void MotionDetector::detect_motion() {
 		threshold(diff, diff, 30, 255, CV_THRESH_BINARY);
 
 		size_t number_of_changes = get_number_of_changes();
+
+		imshow("Result", result);
 		
 		if (number_of_changes > threshold_) {
 			no_motion_frames = 0;
@@ -99,9 +102,9 @@ size_t MotionDetector::get_number_of_changes() {
 
 	clear_bound_rectangle();
 
-	for (size_t y = 0; y != diff.rows; y += 2) {
-		for (size_t x = 0; x != diff.cols; x += 2) {
-			if (static_cast<size_t>(diff.at<uchar>(x, y)) == 255) {
+	for (size_t y = 0; y < diff.rows; y += 2) {
+		for (size_t x = 0; x < diff.cols; x += 2) {
+			if (static_cast<size_t>(diff.at<uchar>(y, x)) == 255) {
 				++number_of_changes;
 
 				if (bound_motion.min_x > x) bound_motion.min_x = x;
@@ -119,24 +122,22 @@ size_t MotionDetector::get_number_of_changes() {
 }
 
 void MotionDetector::clear_bound_rectangle() {
-	bound_motion.min_x = 10;
-	bound_motion.min_y = 20;
-	bound_motion.max_x = 150;
-	bound_motion.max_y = 90;
+	bound_motion.min_x = current_frame.cols;
+	bound_motion.min_y = current_frame.rows;
+	bound_motion.max_x = 0;
+	bound_motion.max_y = 0;
 }
 
 void MotionDetector::make_bounds() {
 	if (bound_motion.min_x - 5 > 0) bound_motion.min_x -= 5;
 	if (bound_motion.min_y - 5 > 0) bound_motion.min_y -= 5;
-	if (bound_motion.max_x + 5 < current_frame.cols) bound_motion.max_x += 5;
-	if (bound_motion.max_y + 5 < current_frame.rows) bound_motion.max_y += 5;
+	if (bound_motion.max_x + 5 < current_frame.cols - 1) bound_motion.max_x += 5;
+	if (bound_motion.max_y + 5 < current_frame.rows - 1) bound_motion.max_y += 5;
 
 	Point top_left(bound_motion.min_x, bound_motion.min_y);
 	Point floor_right(bound_motion.max_x, bound_motion.max_y);
 	Rect rect(top_left, floor_right);
 
-	//Mat cropped = result(rect);
-	//cropped.copyTo(result_cropped);
 	Scalar color(0, 255, 0);
 	rectangle(result, rect, color, 1);
 
