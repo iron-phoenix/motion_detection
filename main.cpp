@@ -15,8 +15,6 @@ using std::endl;
 using std::ofstream;
 
 int main(int argc, char** argv) {
-	ofstream outputVideo("video.bgr", ofstream::binary);
-
 	MailPhotoSender * mail_photo_sender = new PythonMailPhotoSender("./SendMail.py", "send_mail.conf");
 
 	MotionDetector motion_detector(0, 100, 320, 240);
@@ -24,7 +22,7 @@ int main(int argc, char** argv) {
 		cout << "Could not open video device" << endl;
 		return -1;
 	}
-	motion_detector.set_video_writer(&outputVideo);
+	motion_detector.set_video_writer_filename("video.bgr");
 	//motion_detector.set_mail_sender(mail_photo_sender);
 	motion_detector.set_save_filename("motion.jpg");
 

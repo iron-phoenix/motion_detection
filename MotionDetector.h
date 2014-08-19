@@ -23,7 +23,7 @@ enum ErrorType {
 struct MotionDetector {
 	MotionDetector(int capture_device_id, int threshold, int width = 640, int height = 480);
 
-	void set_video_writer(ofstream * video_writer) { this->video_writer = video_writer; }
+	void set_video_writer_filename(const string & video_file_name) { this->video_writer = new ofstream(video_file_name.c_str(), ofstream::binary); }
 	void set_standard_deviation(const int standart_deviation) { this->standard_deviation = standard_deviation; }
 	void set_save_filename(const string & save_filename) { this->save_filename = save_filename; }
 	void set_mail_sender(MailPhotoSender * const mail_sender) { this->mail_sender = mail_sender; send_mail = true; }
