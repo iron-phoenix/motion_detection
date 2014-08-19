@@ -4,9 +4,7 @@ project(motion_detection)
 
 set(SOURCE PythonMailPhotoSender.cpp MotionDetector.cpp main.cpp)
 
-find_package( OpenCV REQUIRED )
-include_directories( ${OpenCV_INCLUDE_DIRS} )
-
 add_executable(motion_detection ${SOURCE})
 
-target_link_libraries(motion_detection ${OpenCV_LIBS})
+target_link_libraries(motion_detection opencv_core opencv_highgui opencv_imgproc)
+

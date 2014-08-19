@@ -71,7 +71,6 @@ void MotionDetector::detect_motion() {
 			++no_motion_frames;
 			if (no_motion_frames == NO_MOTION_FRAMES && need_save_photo) {
 				if (!save_filename.empty() && motion_photo_frame.photo_frame.data) {
-					printf("Hello");
 					imwrite(save_filename.c_str(), motion_photo_frame.photo_frame);
 					motion_photo_frame.motion_square = 0;
 				}
